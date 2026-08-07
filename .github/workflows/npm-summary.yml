@@ -1,0 +1,31 @@
+name: NPM Publish Summary
+
+on:
+  workflow_call:
+    inputs:
+      package_name:
+        type: string
+        required: true
+      before_version:
+        type: string
+        required: true
+      after_version:
+        type: string
+        required: true
+      status:
+        type: string
+        required: true
+
+jobs:
+  summary:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Summary
+        run: |
+          echo "### 🚀 NPM Publication Summary" >> $GITHUB_STEP_SUMMARY
+          echo "* **Package**: \`${{ inputs.package_name }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "* **Git Repository**: [${{ github.repository }}](https://github.com/${{ github.repository }})" >> $GITHUB_STEP_SUMMARY
+          echo "* **Before Publish Version**: \`${{ inputs.before_version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "* **After Publish Version**: \`${{ inputs.after_version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "* **Status**: ${{ inputs.status }}" >> $GITHUB_STEP_SUMMARY
+          echo "* **Registry Link**: [npm Link](https://www.npmjs.com/package/${{ inputs.package_name }})" >> $GITHUB_STEP_SUMMARY

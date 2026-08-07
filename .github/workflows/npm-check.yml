@@ -1,0 +1,47 @@
+name: NPM Check
+
+on:
+  workflow_call:
+    outputs:
+      already_published:
+        value: ${{ jobs.check.outputs.already_published }}
+      package_name:
+        value: ${{ jobs.check.outputs.package_name }}
+      package_version:
+        value: ${{ jobs.check.outputs.package_version }}
+      before_version:
+        value: ${{ jobs.check.outputs.before_version }}
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    outputs:
+      already_published: ${{ steps.check-step.outputs.already_published }}
+      package_name: ${{ steps.check-step.outputs.package_name }}
+      package_version: ${{ steps.check-step.outputs.package_version }}
+      before_version: ${{ steps.check-step.outputs.before_version }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Check version on NPM
+        id: check-step
+        run: |
+          PACKAGE_NAME=$(node -p "require('./package.json').name")
+          PACKAGE_VERSION=$(node -p "require('./package.json').version")
+          BEFORE_VERSION=$(npm view "$PACKAGE_NAME" version 2>/dev/null || echo "None")
+          
+          echo "package_name=$PACKAGE_NAME" >> $GITHUB_OUTPUT
+          echo "package_version=$PACKAGE_VERSION" >> $GITHUB_OUTPUT
+          echo "before_version=$BEFORE_VERSION" >> $GITHUB_OUTPUT
+          
+          if npm view "${PACKAGE_NAME}@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
+            echo "already_published=true" >> $GITHUB_OUTPUT
+          else
+            echo "already_published=false" >> $GITHUB_OUTPUT
+          fi

@@ -1,0 +1,38 @@
+name: Publish Package to npmjs
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  check-version:
+    uses: ./.github/workflows/npm-check.yml
+
+  publish-pkg:
+    needs: check-version
+    if: needs.check-version.outputs.already_published == 'false'
+    uses: ./.github/workflows/npm-publish-reusable.yml
+    secrets:
+      NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+  summary-skipped:
+    needs: check-version
+    if: needs.check-version.outputs.already_published == 'true'
+    uses: ./.github/workflows/npm-summary.yml
+    with:
+      package_name: ${{ needs.check-version.outputs.package_name }}
+      before_version: ${{ needs.check-version.outputs.before_version }}
+      after_version: ${{ needs.check-version.outputs.before_version }}
+      status: "⚠️ Skipped (Version ${{ needs.check-version.outputs.package_version }} is already published on NPM)"
+
+  summary-published:
+    needs: [check-version, publish-pkg]
+    if: always() && needs.check-version.outputs.already_published == 'false' && needs.publish-pkg.result == 'success'
+    uses: ./.github/workflows/npm-summary.yml
+    with:
+      package_name: ${{ needs.check-version.outputs.package_name }}
+      before_version: ${{ needs.check-version.outputs.before_version }}
+      after_version: ${{ needs.check-version.outputs.package_version }}
+      status: "✅ Successfully Published to NPM"
