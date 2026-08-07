@@ -7,6 +7,9 @@
   "bin": {
     "ks-delete-workflow-runs": "./bin/cli.js"
   },
+  "scripts": {
+    "npm-publish": "node npm-publish.js"
+  },
   "files": [
     "bin/",
     "index.js"
