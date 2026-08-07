@@ -1,0 +1,25 @@
+{
+  "name": "ks-delete-workflow-runs",
+  "version": "1.0.0",
+  "description": "CLI to clean and delete GitHub Actions workflow runs page by page",
+  "main": "index.js",
+  "type": "module",
+  "bin": {
+    "ks-delete-workflow-runs": "./bin/cli.js"
+  },
+  "files": [
+    "bin/",
+    "index.js"
+  ],
+  "keywords": [
+    "github",
+    "actions",
+    "workflow",
+    "runs",
+    "delete",
+    "cleaner"
+  ],
+  "author": "KeshavSoft",
+  "license": "MIT",
+  "dependencies": {}
+}
