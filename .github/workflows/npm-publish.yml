@@ -8,19 +8,19 @@ permissions:
 
 jobs:
   check-version:
-    uses: ./.github/workflows/npm-check.yml
+    uses: ./.github/workflows/_npm-check.yml
 
   publish-pkg:
     needs: check-version
     if: needs.check-version.outputs.already_published == 'false'
-    uses: ./.github/workflows/npm-publish-reusable.yml
+    uses: ./.github/workflows/_npm-publish-reusable.yml
     secrets:
       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
   summary-skipped:
     needs: check-version
     if: needs.check-version.outputs.already_published == 'true'
-    uses: ./.github/workflows/npm-summary.yml
+    uses: ./.github/workflows/_npm-summary.yml
     with:
       package_name: ${{ needs.check-version.outputs.package_name }}
       before_version: ${{ needs.check-version.outputs.before_version }}
@@ -30,7 +30,7 @@ jobs:
   summary-published:
     needs: [check-version, publish-pkg]
     if: always() && needs.check-version.outputs.already_published == 'false' && needs.publish-pkg.result == 'success'
-    uses: ./.github/workflows/npm-summary.yml
+    uses: ./.github/workflows/_npm-summary.yml
     with:
       package_name: ${{ needs.check-version.outputs.package_name }}
       before_version: ${{ needs.check-version.outputs.before_version }}
