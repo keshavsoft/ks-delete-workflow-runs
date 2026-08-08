@@ -1,4 +1,4 @@
-name: NPM Publish Summary
+name: NPM Publish with Summary
 
 on:
   workflow_call:

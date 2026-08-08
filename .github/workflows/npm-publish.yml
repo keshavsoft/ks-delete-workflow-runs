@@ -1,4 +1,4 @@
-name: Publish Package to npmjs
+name: NPM Publish with Summary
 
 on:
   workflow_dispatch:

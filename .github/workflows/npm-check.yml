@@ -1,4 +1,4 @@
-name: NPM Check
+name: NPM Check Version
 
 on:
   workflow_call:
